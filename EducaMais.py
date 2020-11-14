@@ -3,6 +3,7 @@ import sys
 import json
 
 from Model.Boy import Boy
+from Model.PlatformLetter import PlatformLetter
 from Model.Settings import Settings
 
 pygame.init()
@@ -19,22 +20,34 @@ window = pygame.display.set_mode((settings.width, settings.height))
 background_image = pygame.image.load(settings.background_image).convert_alpha()
 background = pygame.transform.scale(background_image, (settings.width, settings.height))
 
-# Criar instância do personagem #
+# Criar instância dos sprites de tela #
 boy = Boy(settings)
-characters = pygame.sprite.Group(boy)
+platform = PlatformLetter(settings)
+
+# Agrupar sprites da tela #
+sprites = pygame.sprite.Group(boy, platform)
 
 tempo = pygame.time.Clock()
 
 while True:
     window.blit(background, background.get_rect(center=window.get_rect().center))
-    characters.draw(window)
-    characters.update()
+    sprites.draw(window)
+    sprites.update()
 
     # Manter personagem dentro dos limites da janela #
     # Impedir que o personagem ultrapasse o limite horizontal pela esquerda #
     if boy.rect.centerx < 1:
         boy.velocidade_x = 0
         boy.rect.centerx = 1
+
+    # Se o eixo y do personagem estiver acima do eixo y de alguma plataforma #
+    if boy.rect.y < platform.rect.y:
+        # Se o eixo x do personagem estiver acima do eixo x de alguma plataforma #
+        if boy.rect.x + settings.char_ratio[0]/2.5 >= platform.rect.x and boy.rect.x <= platform.rect.x + settings.platform_ratio[0]/1.3:
+            boy.isOverPlatform = True # O personagem está em colisão com uma plataforma #
+            boy.rect.y = platform.rect.y - settings.platform_ratio[1] - settings.char_ratio[1]/2.7
+    else:
+        not boy.isOverPlatform
 
     # Impedir que o personagem ultrapasse o limite vertical por baixo e manter personagem em contato com o solo #
     if boy.rect.centery > settings.height/1.38:

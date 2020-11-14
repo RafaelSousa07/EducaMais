@@ -12,6 +12,7 @@ class Boy(pygame.sprite.Sprite):
         self.velocidade_x = 0
         self.velocidade_y = 0
         self.gravidade = 0.03
+        self.isOverPlatform = False
 
     def mover_para_esquerda(self, settings):
         self.image = self.scale_image(settings.char_left, settings.char_ratio)
@@ -28,7 +29,6 @@ class Boy(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.centerx += self.velocidade_x
-        # gravidade do Y
         self.velocidade_y += self.gravidade
         self.rect.centery += self.velocidade_y
         self.vl_x += self.vl_x
@@ -40,6 +40,6 @@ class Boy(pygame.sprite.Sprite):
     def parar_movimento_vertical(self):
         self.velocidade_y = 0
 
-    def scale_image(self, image, escala_do_personagem):
+    def scale_image(self, image, escala_da_imagem):
         boy = pygame.image.load(image)
-        return pygame.transform.scale(boy, escala_do_personagem)
+        return pygame.transform.scale(boy, escala_da_imagem)
